@@ -1,6 +1,31 @@
-import { Link, NavLink } from 'react-router-dom';
+import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { logout } from '../helpers/authService';
+import { AuthContext } from '../context/authProvider';
+import { useContext } from 'react';
+
 
 export const Navbar = () => {
+  const { auth, setAuth } = useContext(AuthContext);
+  const location = useLocation()
+  const navigate = useNavigate()
+
+
+  const handleLogout = () => {
+    logout();
+    const privateRoutes = [
+      '/quizzes/quiz/my-quizzes',
+      '/quizzes/solutions'
+    ];
+
+    // Redirecciona al home si la ruta actual es privada
+    if (privateRoutes.includes(location.pathname)) {
+      navigate('/');
+    }
+
+    setAuth(false);
+  };
+
+
   return (
     <nav className="navbar navbar-expand-lg sticky-top navbar-dark bg-dark">
       <div className="container-fluid">
@@ -14,7 +39,7 @@ export const Navbar = () => {
               <NavLink className="nav-link" aria-current="page" to="quizzes/list">Quizzes</NavLink>
             </li>
             <li className="nav-item">
-              <NavLink className="nav-link" to="quizzes/my-quizzes">My Quizzes</NavLink>
+              <NavLink className="nav-link" to="quizzes/quiz/my-quizzes">My Quizzes</NavLink>
             </li>
             <li className="nav-item">
               <NavLink className="nav-link" to="quizzes/solutions">My Solutions</NavLink>
@@ -24,39 +49,22 @@ export const Navbar = () => {
             </li>
           </ul>
           <ul className="navbar-nav ml-auto">
-            <li className="nav-item dropdown no-arrow align-middle">
-              <a className="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown"
-                role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              </a>
-              <div className="dropdown-menu dropdown-menu-right animated--grow-in" aria-labelledby="userDropdown">
-                <p className="dropdown-header fw-bold text-center text-dark"> Welcome</p>
-                <hr/>
-                  <a className="dropdown-item" href="{% url 'Profile' %}">
-                    <i className="far fa-address-card fa-sm fa-fw mr-2 text-gray-400"></i>
-                    Edit Account
-                  </a>
-                  <button type="button" className="btn dropdown-item" data-bs-toggle="modal"
-                    data-bs-target="#staticBackdropLive">
-                    <i className="fas fa-trash-can fa-sm fa-fw mr-2 text-gray-400"></i>
-                    Delete Account
-                  </button>
-                  <a className="dropdown-item" href="#">
-                    <i className="far fa-question-circle fa-sm fa-fw mr-2 text-gray-400"></i>
-                    Help
-                  </a>
-                  <div className="dropdown-divider"></div>
-                  <a className="dropdown-item" href="{% url 'Logout' %}">
-                    <i className="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
-                    Logout
-                  </a>
-              </div>
-            </li>
-
-            <li className="nav-item ml-md-4">
-              <Link className="nav-item btn btn-warning" id="Login"
+          {!auth && (
+            <li className="nav-item ml-md-4 me-3">
+              <Link className="nav-item btn btn-success" id="Login"
                 to="/login">Login</Link>
-            </li>
-            </ul>
+            </li>)}
+            {!auth && (
+            <li className="nav-item ml-md-4 me-3">
+              <Link className="nav-item btn btn-primary" id="Login"
+                to="/register">Register</Link>
+            </li>)}
+            {auth &&
+              (<li className="nav-item ml-md-4 me-3">
+                <button className="nav-item btn btn-primary" id="Login" onClick={handleLogout}
+                ><i className='fas fa-sign-out-alt'></i> Logout</button>
+              </li>)}
+          </ul>
         </div>
       </div>
     </nav>

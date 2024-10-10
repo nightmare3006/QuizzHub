@@ -1,18 +1,18 @@
 import { useState } from "react";
 import {register} from "../helpers/authService";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 
 export const RegisterPage = () => {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-
+  const navigate = useNavigate();
   const handleRegister = (e) => {
     e.preventDefault();
     register(username, email, password)
-    .then(response => {
-      console.log(response.data);
+    .then(() => {
+      navigate('/login')
     },
     error => {
       console.log(error.response.data);

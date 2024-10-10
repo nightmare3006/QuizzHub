@@ -1,21 +1,30 @@
-import { useState } from "react"
-import { Link } from "react-router-dom"
-import {login} from "../helpers/authService";
+import { useContext, useEffect, useState } from "react"
+import { Link, replace, useNavigate } from "react-router-dom"
+import { login } from "../helpers/authService";
+import { AuthContext } from "../context/authProvider";
 
 
 export const LoginPage = () => {
   const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('')
+  const [password, setPassword] = useState('');
+  const { auth, setAuth } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (auth) {
+      navigate('/', {replace: true}); // Redirigir al home si ya está logueado
+    }
+  }, [auth, navigate]);
 
   const handleLogin = (e) => {
     e.preventDefault();
     login(username, password)
-    .then(() => {
-      console.log("first");
-    }, 
-    error =>{
-      console.log(error.response.data);
-    })
+      .then(() => {
+        setAuth(true);
+      },
+        error => {
+          console.log(error.response.data);
+        })
   }
 
   return (
@@ -28,12 +37,12 @@ export const LoginPage = () => {
         <div className="card-body p-4">
           <form className="contact-form" onSubmit={handleLogin}>
             <div className="form-group mt-2">
-            <label htmlFor="username" className="form-label">Username</label>
-              <input type="text" id="username" value={username} className="form-control"  onChange={e => setUsername(e.target.value)}/>
+              <label htmlFor="username" className="form-label">Username</label>
+              <input type="text" id="username" value={username} className="form-control" onChange={e => setUsername(e.target.value)} />
             </div>
             <div className="form-group mt-2">
               <label htmlFor="password" className="form-label">Password</label>
-              <input type="password" value={password} id="password" className="form-control" onChange={ e => setPassword(e.target.value)} />
+              <input type="password" value={password} id="password" className="form-control" onChange={e => setPassword(e.target.value)} />
 
             </div>
             <hr />
