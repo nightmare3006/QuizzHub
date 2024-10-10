@@ -10,17 +10,29 @@ const register = (username, email, password) => {
     });
 };
 
-const login = (username, password) => {
-    return axios.post(API_URL + 'login/', {
-        username,
-        password,
-    }).then(response => {
-        if (response.data.access) {
-            localStorage.setItem('user', JSON.stringify(response.data));
-        }
+
+const login = async (username, password) => {
+    try {
+        const response = await axios.post('http://127.0.0.1:8000/auth/login/', { username, password });
+        const { access, refresh } = response.data;
+
+        // Obtener el nombre de usuario
+        const { user_id } = JSON.parse(atob(access.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')));
+        const userResponse = await axios.get(`http://127.0.0.1:8000/auth/get-username/${user_id}/`);
+
+        // Guardar el token y el nombre de usuario en el localStorage
+        localStorage.setItem('user', JSON.stringify({
+            access,
+            refresh,
+            username: userResponse.data.username
+        }));
+
         return response.data;
-    });
+    } catch (error) {
+        console.error('Error during login:', error);
+    }
 };
+
 
 const logout = () => {
     localStorage.removeItem('user');
@@ -64,6 +76,12 @@ const isAuthenticated = () => {
     return true;
 };
 
+const updateToken = () => {
+    refreshToken();
+    const user = JSON.parse(localStorage.getItem('user'));
+    return user.access;
+}
+
 
 
 
@@ -71,5 +89,7 @@ export {
     register,
     login,
     logout,
+    refreshToken,
     isAuthenticated,
+    updateToken
 };
