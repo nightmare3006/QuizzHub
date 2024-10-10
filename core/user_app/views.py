@@ -1,4 +1,5 @@
 from rest_framework import generics, status
+from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.views import APIView
@@ -56,7 +57,7 @@ class UserSolutionsView(generics.ListAPIView):
 
     def get_queryset(self):
         user_id = self.request.user
-        return Solution.objects.filter(owner_id=user_id)
+        return Solution.objects.filter(owner_id=user_id, deleted=False)
     
 class UserQuizView(generics.ListAPIView):
     serializer_class = QuizSerializer
@@ -65,3 +66,11 @@ class UserQuizView(generics.ListAPIView):
     def get_queryset(self):
         user_id = self.request.user
         return Quiz.objects.filter(owner_id=user_id).order_by('id')
+
+@api_view(['GET'])
+def get_username_by_id(request, user_id):
+    try:
+        user = User.objects.get(id=user_id)
+        return Response({'username': user.username})
+    except User.DoesNotExist:
+        return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
