@@ -2,6 +2,8 @@ from rest_framework import serializers
 from .models import *
 
 class QuizSerializer(serializers.ModelSerializer):
+    owner = serializers.PrimaryKeyRelatedField(read_only=True)
+    
     class Meta:
         model = Quiz
         fields = '__all__'
