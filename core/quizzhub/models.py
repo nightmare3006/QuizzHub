@@ -19,6 +19,12 @@ class Solution(models.Model):
     owner = models.ForeignKey(User, on_delete= models.CASCADE, verbose_name='Owner')
     content = models.TextField(max_length=500,verbose_name='Content')
     posted_at = models.DateTimeField(default=timezone.now)
+    deleted = models.BooleanField(default=False)
+    
+    def save(self, *args, **kwargs):
+        if self.deleted:
+            Winner.objects.filter(solution=self).delete()
+        super(Solution, self).save(*args, **kwargs)
 
 
 
