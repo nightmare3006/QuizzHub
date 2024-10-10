@@ -5,8 +5,10 @@ import { RegisterPage } from "../components/RegisterPage"
 import { HomePage } from "../components/HomePage"
 import { QuizzHubRouter } from "./QuizzHubRouter"
 import { Navbar } from "../components/Navbar"
+import { refreshToken } from "../helpers/authService"
 
 export const AppRouter = () => {
+  refreshToken();
   return (
     <BrowserRouter>
     <Navbar />
