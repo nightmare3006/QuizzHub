@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { useState } from 'react'
+import { updateToken } from '../../helpers/authService';
 
 export const CreateQuiz = () => {
     const API_URL = "http://127.0.0.1:8000/quizhub/quiz/";
@@ -8,8 +9,7 @@ export const CreateQuiz = () => {
 
     const handleCreateQuiz = (e) => {
         e.preventDefault();
-        const user = JSON.parse(localStorage.getItem('user'));
-        const token = user ? user.access : null;
+        const token = updateToken();
 
         axios.post(API_URL, {
             title,
