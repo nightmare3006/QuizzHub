@@ -6,8 +6,8 @@ from django.contrib.auth import login, logout
 from django.contrib.auth.models import User
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from quizzhub.models import Solution
-from quizzhub.serializer import SolutionSerializer
+from quizzhub.models import Solution, Quiz
+from quizzhub.serializer import SolutionSerializer, QuizSerializer
 from .serializers import RegisterSerializer, LoginSerializer, UserSerializer
 
 
@@ -55,5 +55,13 @@ class UserSolutionsView(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        user_id = self.kwargs["user_id"]
+        user_id = self.request.user
         return Solution.objects.filter(owner_id=user_id)
+    
+class UserQuizView(generics.ListAPIView):
+    serializer_class = QuizSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        user_id = self.request.user
+        return Quiz.objects.filter(owner_id=user_id).order_by('id')
