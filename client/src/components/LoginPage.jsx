@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react"
 import { Link, replace, useNavigate } from "react-router-dom"
 import { login } from "../helpers/authService";
-import { AuthContext } from "../context/authProvider";
+import { AuthContext } from "../context/AuthProvider";
 
 
 export const LoginPage = () => {
@@ -9,22 +9,28 @@ export const LoginPage = () => {
   const [password, setPassword] = useState('');
   const { auth, setAuth } = useContext(AuthContext);
   const navigate = useNavigate();
+  const [error, setError] = useState('');
+
 
   useEffect(() => {
     if (auth) {
-      navigate('/', {replace: true}); // Redirigir al home si ya está logueado
+      navigate('/', { replace: true });
     }
   }, [auth, navigate]);
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    login(username, password)
-      .then(() => {
+    setError('');
+    try {
+      const data = await login(username, password);
+      if (data) {
         setAuth(true);
-      },
-        error => {
-          console.log(error.response.data);
-        })
+        navigate('/', { replace: true });
+      }
+    } catch (error) {
+      const errorMessage = error.response?.data?.non_field_errors || "An error occurred during login";
+      setError(errorMessage);
+    }
   }
 
   return (
@@ -35,6 +41,11 @@ export const LoginPage = () => {
           <p className="mb-1">To share your knowledge!</p>
         </div>
         <div className="card-body p-4">
+          {error && (
+            <div className="alert alert-danger" role="alert">
+              {error}
+            </div>
+          )}
           <form className="contact-form" onSubmit={handleLogin}>
             <div className="form-group mt-2">
               <label htmlFor="username" className="form-label">Username</label>
