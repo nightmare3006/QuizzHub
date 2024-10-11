@@ -2,7 +2,6 @@
 
 export const Pagination = ({ next, previous, onPageChange }) => {
 
-    console.log(next, previous)
     return (
       <nav>
         <ul className="pagination pagination-lg justify-content-center">

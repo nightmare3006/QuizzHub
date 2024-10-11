@@ -58,7 +58,6 @@ export const QuizSolutions = () => {
                         </div>
                     </div>
                 )}
-                {console.log(data)}
                 {data.map(solution => (
                     <div className="d-flex justify-content-center" key={solution.id}>
                         <SolutionBody {...solution} setUpdate={setUpdate} />

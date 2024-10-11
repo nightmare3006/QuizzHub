@@ -26,7 +26,6 @@ export const QuizDetailPage = () => {
 
     const SOLUTION_URL = `http://127.0.0.1:8000/quizhub/solution/${winner?.solution}`
     const solution = useFetch(SOLUTION_URL)
-    console.log(winner?.solution, solution)
     const { auth } = useContext(AuthContext);
     const navigate = useNavigate()
 
@@ -53,13 +52,6 @@ export const QuizDetailPage = () => {
                         'Accept': 'application/json',
                         'Authorization': `JWT ${token}`
                     }
-                })
-                .then(response => {
-                    console.log('Solution posted:', response.data);
-                })
-                .catch(error => {
-                    console.error('Error posting solution:', error);
-                    console.error('Error details:', error.response?.data);
                 });
             setContent('')
             navigate('/quizzes/list');
@@ -72,7 +64,7 @@ export const QuizDetailPage = () => {
     const handleFetchWinner = async () => {
         try {
             const response = await fetchWinner(quizId);
-            console.log(response)
+
             setWinner(response);
         } catch (error) {
             console.error('Error fetching winner:', error);
