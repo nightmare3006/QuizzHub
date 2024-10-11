@@ -16,6 +16,9 @@ class SolutionSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class WinnerSerializer(serializers.ModelSerializer):
+    username = serializers.CharField(source='solution.owner.username', read_only=True)
+    solution_content = serializers.CharField(source='solution.content', read_only=True)
+    
     class Meta:
         model = Winner
         fields = '__all__'
