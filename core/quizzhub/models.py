@@ -29,5 +29,8 @@ class Solution(models.Model):
 
 
 class Winner(models.Model):
-    quiz = models.ForeignKey(Quiz, on_delete= models.CASCADE, verbose_name='Quiz')
-    solution = models.ForeignKey(Solution, on_delete=models.CASCADE, verbose_name='Solution')
+    quiz = models.OneToOneField(Quiz, on_delete=models.CASCADE, related_name='winner')
+    solution = models.OneToOneField(Solution, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'Winner for {self.quiz}'
