@@ -33,4 +33,5 @@ __pycache__/
 *.tmp
 env/
 .env
+db.sqlite3
 
