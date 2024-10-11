@@ -1,32 +1,52 @@
 import axios from 'axios'
 import { useState } from 'react'
 import { updateToken } from '../../helpers/authService';
+import { useNavigate } from 'react-router-dom';
 
 export const CreateQuiz = () => {
     const API_URL = "http://127.0.0.1:8000/quizhub/quiz/";
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
+    const [error, setError] = useState('');
+    const navigate = useNavigate();
 
-    const handleCreateQuiz = (e) => {
+    const validateTitle = (title) => {
+        return title.length > 10 && title.length <= 150;
+    };
+
+    const validateDescription = (description) => {
+        return description.length >= 60 && description.length <= 1000;
+    };
+
+    const handleCreateQuiz = async (e) => {
         e.preventDefault();
-        const token = updateToken();
+        setError('');
 
-        axios.post(API_URL, {
-            title,
-            description,
-        }, {
-            headers: {
-                'Content-Type' : 'application/json',
-                'Accept': 'application/json',
-                'Authorization': `JWT ${token}`
+
+        try {
+
+            if (!validateTitle(title)) {
+                throw new Error('Title must be between 10 and 150 characters.');
             }
-        })
-            .then(response => {
-                console.log('Quiz created successfully:', response.data);
-            })
-            .catch(error => {
-                console.error('Error creating quiz:', error);
+
+            if (!validateDescription(description)) {
+                throw new Error('Description must be between 60 and 1000 characters.');
+            }
+
+            const token = updateToken();
+            await axios.post(API_URL, { title, description }, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `JWT ${token}`
+                }
             });
+            setTitle('')
+            setDescription('')
+            navigate('/quizzes/list');
+        } catch (error) {
+            const errorMessage = error.response?.data || error.message || "An error occurred during quiz creation";
+            setError(errorMessage);
+        }
     };
     return (
         <form onSubmit={handleCreateQuiz}>
@@ -39,6 +59,11 @@ export const CreateQuiz = () => {
                         </div>
                     </div>
                     <div className="card-body p-4">
+                        {error && (
+                            <div className="alert alert-danger" role="alert">
+                                {error}
+                            </div>
+                        )}
                         <div className="form-group mt-2">
                             <label htmlFor="title" className="form-label">Title</label>
                             <input type="text" id="title" value={title} className="form-control" onChange={e => setTitle(e.target.value)} placeholder="Write your Quiz's title here" required />
