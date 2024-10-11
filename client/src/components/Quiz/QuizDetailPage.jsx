@@ -79,7 +79,24 @@ export const QuizDetailPage = () => {
             return true;
         }
         else return false;
-    }
+    };
+    const handleDelete = () => {
+        const token = updateToken();
+
+        axios.delete(`http://127.0.0.1:8000/quizhub/quiz/${quizId}/`, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'Authorization': `JWT ${token}`
+            }
+        }).then(response => {
+            console.log(response);
+            navigate('/quizzes/list');
+          })
+          .catch(error => {
+            console.error('Error deleting Quiz:', error);
+          });
+    };
 
     return (
         <div className="container mt-4">
@@ -98,7 +115,7 @@ export const QuizDetailPage = () => {
                         <div className="btn-group" role="group" aria-label="Basic outlined example">
                             {auth && isOwner() && (<Link to={`../quiz/${quizId}/solutions`} className="btn btn-outline-primary"><i className="fas fa-eye"></i> View Solutions</Link>)}
                             <button className="btn btn-outline-success" onClick={handleFetchWinner}><i className="fas fa-trophy"></i> View Winner</button>
-                            {auth && isOwner() && (<button type="button" className="btn btn-outline-danger"><i className="fas fa-trash"></i> Delete Quiz</button>)}
+                            {auth && isOwner() && (<button type="button" onClick={handleDelete} className="btn btn-outline-danger"><i className="fas fa-trash"></i> Delete Quiz</button>)}
                         </div>
                     </div>
                 </div>
