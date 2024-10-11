@@ -13,6 +13,7 @@ export const QuizListPage = () => {
   const { data, errors, loading, next, previous } = useFetch(url);
   const [update, setUpdate] = useState(false);
 
+
   const handlePageChange = (newUrl) => {
     const newPage = new URL(newUrl).searchParams.get("page");
     if (newPage) {
@@ -48,7 +49,7 @@ export const QuizListPage = () => {
         <div className="container mt-5">
           <div className="row justify-content-center">
             <div className="col text-center">
-              <h1 className="display-1 text-muted" style={{ color: "rgba(0, 0, 0, 0.1);" }}>
+              <h1 className="display-1 text-muted" style={{ color: "rgba(0, 0, 0, 0.1)" }}>
                 No Quizzes published yet.
               </h1>
             </div>
