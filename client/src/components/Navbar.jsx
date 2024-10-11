@@ -1,6 +1,6 @@
 import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { logout } from '../helpers/authService';
-import { AuthContext } from '../context/authProvider';
+import { AuthContext } from '../context/AuthProvider';
 import { useContext } from 'react';
 
 
@@ -8,6 +8,9 @@ export const Navbar = () => {
   const { auth, setAuth } = useContext(AuthContext);
   const location = useLocation()
   const navigate = useNavigate()
+  const user = JSON.parse(localStorage.getItem('user'));
+  const username = user ? user.username : null
+
 
 
   const handleLogout = () => {
@@ -37,29 +40,34 @@ export const Navbar = () => {
           <ul className="navbar-nav me-auto mb-2 mb-lg-0">
             <li className="nav-item">
               <NavLink className="nav-link" aria-current="page" to="quizzes/list">Quizzes</NavLink>
-            </li>
-            <li className="nav-item">
-              <NavLink className="nav-link" to="quizzes/quiz/my-quizzes">My Quizzes</NavLink>
-            </li>
-            <li className="nav-item">
-              <NavLink className="nav-link" to="quizzes/solutions">My Solutions</NavLink>
-            </li>
-            <li className="nav-item">
-              <NavLink className="nav-link" href="#"></NavLink>
-            </li>
+            </li>{auth && (
+              <li className="nav-item">
+                <NavLink className="nav-link" to="quizzes/quiz/my-quizzes">My Quizzes</NavLink>
+              </li>
+            )}
+            {auth && (
+              <li className="nav-item">
+                <NavLink className="nav-link" to="quizzes/solutions">My Solutions</NavLink>
+              </li>
+            )}
           </ul>
           <ul className="navbar-nav ml-auto">
-          {!auth && (
-            <li className="nav-item ml-md-4 me-3">
-              <Link className="nav-item btn btn-success" id="Login"
-                to="/login">Login</Link>
-            </li>)}
             {!auth && (
-            <li className="nav-item ml-md-4 me-3">
-              <Link className="nav-item btn btn-primary" id="Login"
-                to="/register">Register</Link>
-            </li>)}
-            {auth &&
+              <li className="nav-item ml-md-4 me-3">
+                <Link className="nav-item btn btn-success" id="Login"
+                  to="/login">Login</Link>
+              </li>)}
+            {!auth && (
+              <li className="nav-item ml-md-4 me-3">
+                <Link className="nav-item btn btn-primary" id="Login"
+                  to="/register">Register</Link>
+              </li>)}
+              {auth &&
+              (<li className="nav-item ml-md-4 me-3 mt-2">
+                <p className="text-white"
+                >Welcome {username}</p>
+              </li>)}
+              {auth &&
               (<li className="nav-item ml-md-4 me-3">
                 <button className="nav-item btn btn-primary" id="Login" onClick={handleLogout}
                 ><i className='fas fa-sign-out-alt'></i> Logout</button>
