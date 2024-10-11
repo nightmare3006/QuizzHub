@@ -4,7 +4,8 @@ import { SolutionListPage } from "../components/Solution/SolutionListPage"
 import { QuizDetailPage } from "../components/Quiz/QuizDetailPage"
 import { CreateQuiz } from "../components/Quiz/CreateQuiz"
 import { PrivateRoute } from "../components/PrivateRoute"
-import {MyQuizzes} from '../components/Quiz/MyQuizzes'
+import { MyQuizzes } from '../components/Quiz/MyQuizzes'
+import { QuizSolutions } from "../components/Solution/QuizSolutions"
 
 
 export const QuizzHubRouter = () => {
@@ -23,6 +24,9 @@ export const QuizzHubRouter = () => {
             </PrivateRoute>} />
             <Route path="quiz/my-quizzes" element={<PrivateRoute>
                 <MyQuizzes />
+            </PrivateRoute>} />
+            <Route path="quiz/:quizId/solutions" element={<PrivateRoute>
+                <QuizSolutions />
             </PrivateRoute>} />
         </Routes>
     )
