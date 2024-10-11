@@ -12,6 +12,8 @@ export const MyQuizzes = () => {
     const page = query.get("page") || 1;
     const [url, setUrl] = useState(`http://127.0.0.1:8000/auth/my-quizzes/?page=${page}`);
     const { data, errors, loading, next, previous } = useFetch(url);
+    const [update, setUpdate] = useState(false);
+
 
     const handlePageChange = (newUrl) => {
         const newPage = new URL(newUrl).searchParams.get("page");
@@ -26,8 +28,8 @@ export const MyQuizzes = () => {
 
     useEffect(() => {
         const newPage = query.get("page") || 1;
-        setUrl(`http://127.0.0.1:8000/auth/my-quizzes/?page=${newPage}`);
-    }, [location.search]);
+        setUrl(`http://127.0.0.1:8000/auth/my-quizzes/?page=1&_=${new Date().getTime()}`);
+    }, [location.search, update]);
 
     useEffect(() => {
         if (!query.get("page")) {
@@ -66,7 +68,7 @@ export const MyQuizzes = () => {
                     {data.map(quiz => (
                         <div className="col mb-3" key={quiz.id}>
                             <div className="d-flex justify-content-center">
-                                <QuizCard {...quiz} />
+                                <QuizCard {...quiz} setUpdate={setUpdate} />
                             </div>
                         </div>
                     ))}
